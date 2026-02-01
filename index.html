@@ -55,7 +55,36 @@
 
         .services-section {
             padding: 4rem 0;
-			background: linear-gradient(to bottom, #1a1a2e, #2f4de7, #fb29e1)
+			background: linear-gradient(to bottom, #1a1a2e, #2563eb, #60a5fa);
+            overflow: hidden;
+        }
+        .carousel-wrapper {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+            padding: 1rem 0;
+        }
+        .carousel-container {
+            display: flex;
+            gap: 1.5rem;
+            animation: scroll 70s linear infinite;
+            width: fit-content;
+        }
+        .carousel-container:hover, .carousel-container.paused {
+            animation-play-state: paused;
+        }
+        .carousel-container.dragging {
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+        .carousel-container.dragging .service-card {
+            pointer-events: none;
+        }
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
         }
         .service-card {
             background-color: #ffffff;
@@ -64,10 +93,15 @@
             box-shadow: 0 4px 25px rgba(0,0,0,0.05);
             padding: 2rem;
             transition: all 0.3s ease;
-            height: 100%;
+            min-width: 280px;
+            max-width: 280px;
+            flex-shrink: 0;
         }
         .service-card:hover { transform: translateY(-5px); box-shadow: 0 6px 30px rgba(0,0,0,0.08); }
         .service-icon { font-size: 3rem; color: #0056b3; }
+        .service-icon-svg { width: 3rem; height: 3rem; margin: 0 auto; }
+        .service-icon-svg path { stroke: #0056b3; fill: none; stroke-width: 2; }
+        .service-icon-img { width: 4.5rem; height: auto; margin: 0 auto; display: block; }
         .service-card h3 { font-weight: 700; color: #343a40; margin-top: 1rem; }
 
         .location-section {
@@ -135,35 +169,90 @@
                 <h2 class="fw-bold text-white">Nossos Principais Tratamentos</h2>
                 <p class="lead" style="color: rgba(255, 255, 255, 0.85);">Foco no que realmente importa para a sua saúde bucal.</p>
             </div>
-
-            <div class="row g-4 justify-content-center">
-                <div class="col-md-6 col-lg-3 d-flex">
-                    <div class="service-card text-center">
-                        <i class="bi bi-brightness-high service-icon"></i>
-                        <h3 class="h5">Clareamento Dentário</h3>
-                        <p>Recupere um sorriso mais branco e confiante com técnicas modernas e seguras.</p>
-                    </div>
+        </div>
+        
+        <div class="carousel-wrapper">
+            <div class="carousel-container" id="servicesCarousel">
+                <div class="service-card text-center">
+                    <img src="imagens/icons/clareamento.jpeg" alt="Próteses Dentárias" class="service-icon-img">
+                    <h3 class="h5">Clareamento Dentário</h3>
+                    <p>Recupere um sorriso mais branco e confiante com técnicas modernas e seguras.</p>
                 </div>
-                <div class="col-md-6 col-lg-3 d-flex">
-                    <div class="service-card text-center">
-                        <i class="bi bi-bandaid service-icon"></i>
-                        <h3 class="h5">Extração de Sisos</h3>
-                        <p>Procedimento seguro e tranquilo para aliviar a dor e prevenir futuros problemas.</p>
-                    </div>
+                <div class="service-card text-center">
+                    <img src="imagens/icons/cirurgia-oral-menor.png" alt="Próteses Dentárias" class="service-icon-img">
+                    <h3 class="h5">Extração de Sisos</h3>
+                    <p>Procedimento seguro e tranquilo para aliviar a dor e prevenir futuros problemas.</p>
                 </div>
-                <div class="col-md-6 col-lg-3 d-flex">
-                    <div class="service-card text-center">
-                        <i class="bi bi-heart-pulse service-icon"></i>
-                        <h3 class="h5">Tratamento de Canal</h3>
-                        <p>Salve seu dente com a endodontia. Tratamento sem dor para eliminar infecções.</p>
-                    </div>
+                <div class="service-card text-center">
+                    <img src="imagens/icons/canal.png" alt="Tratamento endodôntico (Canal)" class="service-icon-img">
+                    <h3 class="h5">Tratamento endodôntico (Canal)</h3>
+                    <p>Salve seu dente com a endodontia. Tratamento sem dor para eliminar infecções.</p>
                 </div>
-                <div class="col-md-6 col-lg-3 d-flex">
-                    <div class="service-card text-center">
-                        <i class="bi bi-shield-check service-icon"></i>
-                        <h3 class="h5">Placas de Bruxismo</h3>
-                        <p>Proteja seus dentes do desgaste e alivie dores de cabeça e tensão muscular.</p>
-                    </div>
+                <div class="service-card text-center">
+                    <img src="imagens/icons/bruxismo.png" alt="Placas de Bruxismo" class="service-icon-img">
+                    <h3 class="h5">Placas de Bruxismo</h3>
+                    <p>Proteja seus dentes do desgaste e alivie dores de cabeça e tensão muscular.</p>
+                </div>
+                <div class="service-card text-center">
+                    <img src="imagens/icons/dentadura.png" alt="Próteses Dentárias" class="service-icon-img">
+                    <h3 class="h5">Próteses Dentárias</h3>
+                    <p>Restaure a função e estética do seu sorriso com próteses modernas e confortáveis.</p>
+                </div>
+                <div class="service-card text-center">
+                    <img src="imagens/icons/implante.png" alt="Implante Dentário" class="service-icon-img">
+                    <h3 class="h5">Implantes Dentários</h3>
+                    <p>Solução definitiva para dentes perdidos. Recupere segurança e qualidade de vida.</p>
+                </div>
+                <div class="service-card text-center">
+                    <img src="imagens/icons/facetas.png" alt="Facetas Dentárias" class="service-icon-img">
+                    <h3 class="h5">Facetas Dentárias</h3>
+                    <p>Transforme seu sorriso com facetas de porcelana. Resultado natural e duradouro.</p>
+                </div>
+                <div class="service-card text-center">
+                    <img src="imagens/icons/apneia.png" alt="Tratamento de Apneia" class="service-icon-img">
+                    <h3 class="h5">Tratamento de Apneia</h3>
+                    <p>Melhore a qualidade do seu sono com aparelhos personalizados para apneia.</p>
+                </div>
+                <!-- Duplicar cards para efeito infinito -->
+                <div class="service-card text-center">
+                    <img src="imagens/icons/clareamento.jpeg" alt="Próteses Dentárias" class="service-icon-img">
+                    <h3 class="h5">Clareamento Dentário</h3>
+                    <p>Recupere um sorriso mais branco e confiante com técnicas modernas e seguras.</p>
+                </div>
+                <div class="service-card text-center">
+                    <img src="imagens/icons/cirurgia-oral-menor.png" alt="Próteses Dentárias" class="service-icon-img">
+                    <h3 class="h5">Cirurgia Oral Menor</h3>
+                    <p>Procedimento de Extração dentária (Dentes, cisos e raizes residual).</p>
+                </div>
+                <div class="service-card text-center">
+                    <img src="imagens/icons/canal.png" alt="Tratamento endodôntico (Canal)" class="service-icon-img">
+                    <h3 class="h5">Tratamento endodôntico (Canal)</h3>
+                    <p>Salve seu dente com a endodontia. Tratamento sem dor para eliminar infecções.</p>
+                </div>
+                <div class="service-card text-center">
+                    <img src="imagens/icons/bruxismo.png" alt="Placas de Bruxismo" class="service-icon-img">
+                    <h3 class="h5">Placas de Bruxismo</h3>
+                    <p>Proteja seus dentes do desgaste e alivie dores de cabeça e tensão muscular.</p>
+                </div>
+                <div class="service-card text-center">
+                    <img src="imagens/icons/dentadura.png" alt="Próteses Dentárias" class="service-icon-img">
+                    <h3 class="h5">Próteses Dentárias</h3>
+                    <p>Restaure a função e estética do seu sorriso com próteses modernas e confortáveis.</p>
+                </div>
+                <div class="service-card text-center">
+                    <img src="imagens/icons/implante.png" alt="Implante Dentário" class="service-icon-img">
+                    <h3 class="h5">Implantes Dentários</h3>
+                    <p>Solução definitiva para dentes perdidos. Recupere segurança e qualidade de vida.</p>
+                </div>
+                <div class="service-card text-center">
+                    <img src="imagens/icons/facetas.png" alt="Facetas Dentárias" class="service-icon-img">
+                    <h3 class="h5">Facetas Dentárias</h3>
+                    <p>Transforme seu sorriso com facetas de porcelana. Resultado natural e duradouro.</p>
+                </div>
+                <div class="service-card text-center">
+                    <img src="imagens/icons/apneia.png" alt="Tratamento de Apneia" class="service-icon-img">
+                    <h3 class="h5">Tratamento de Apneia</h3>
+                    <p>Melhore a qualidade do seu sono com aparelhos personalizados para apneia.</p>
                 </div>
             </div>
         </div>
@@ -226,6 +315,102 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+        // Suporte para arrastar o carrossel com mouse e touch
+        const carousel = document.getElementById('servicesCarousel');
+        const wrapper = carousel.parentElement;
+        let isDragging = false;
+        let startX = 0;
+        let currentTranslate = 0;
+        let prevTranslate = 0;
+        let animationID = 0;
+        let currentAnimation = null;
+
+        // Desabilitar animação CSS ao arrastar
+        function pauseAnimation() {
+            carousel.style.animationPlayState = 'paused';
+            carousel.classList.add('paused');
+        }
+
+        function resumeAnimation() {
+            carousel.style.animationPlayState = 'running';
+            setTimeout(() => {
+                carousel.classList.remove('paused');
+            }, 2000);
+        }
+
+        // Mouse events
+        carousel.addEventListener('mousedown', (e) => {
+            e.preventDefault(); // Prevenir seleção de texto
+            isDragging = true;
+            startX = e.pageX - wrapper.offsetLeft;
+            carousel.style.cursor = 'grabbing';
+            carousel.classList.add('dragging');
+            pauseAnimation();
+            
+            // Obter a posição atual da animação
+            const style = window.getComputedStyle(carousel);
+            const matrix = new DOMMatrix(style.transform);
+            currentTranslate = matrix.m41;
+            prevTranslate = currentTranslate;
+        });
+
+        carousel.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            e.preventDefault();
+            const x = e.pageX - wrapper.offsetLeft;
+            const walk = (x - startX) * 2;
+            carousel.style.transform = `translateX(${prevTranslate + walk}px)`;
+        });
+
+        carousel.addEventListener('mouseup', () => {
+            if (!isDragging) return;
+            isDragging = false;
+            carousel.style.cursor = 'grab';
+            carousel.classList.remove('dragging');
+            
+            // Resetar para continuar a animação
+            carousel.style.transform = '';
+            resumeAnimation();
+        });
+
+        carousel.addEventListener('mouseleave', () => {
+            if (!isDragging) return;
+            isDragging = false;
+            carousel.style.cursor = 'grab';
+            carousel.classList.remove('dragging');
+            carousel.style.transform = '';
+            resumeAnimation();
+        });
+
+        // Touch events
+        carousel.addEventListener('touchstart', (e) => {
+            isDragging = true;
+            startX = e.touches[0].clientX;
+            pauseAnimation();
+            
+            const style = window.getComputedStyle(carousel);
+            const matrix = new DOMMatrix(style.transform);
+            currentTranslate = matrix.m41;
+            prevTranslate = currentTranslate;
+        });
+
+        carousel.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            const x = e.touches[0].clientX;
+            const walk = (x - startX) * 2;
+            carousel.style.transform = `translateX(${prevTranslate + walk}px)`;
+        });
+
+        carousel.addEventListener('touchend', () => {
+            if (!isDragging) return;
+            isDragging = false;
+            carousel.style.transform = '';
+            resumeAnimation();
+        });
+
+        // Cursor style
+        carousel.style.cursor = 'grab';
 
         document.addEventListener('scroll', function() {
             const floatBtn = document.getElementById('whatsappFloat');
