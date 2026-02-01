@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador QR Code - Dr. Luiz H Dias</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #d4af37;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .container {
+            background: #000;
+            border: 2px solid #d4af37;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(212, 175, 55, 0.3);
+            text-align: center;
+            max-width: 600px;
+        }
+        
+        h1 {
+            color: #d4af37;
+            margin-bottom: 10px;
+            font-size: 28px;
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+        }
+        
+        .subtitle {
+            color: #b8962b;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+        
+        #qrcode {
+            display: inline-block;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            margin: 20px 0;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+        }
+        
+        .url-display {
+            background: #1a1a1a;
+            border: 1px solid #d4af37;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            color: #d4af37;
+            word-break: break-all;
+        }
+        
+        .info {
+            margin-top: 30px;
+            padding: 20px;
+            background: #1a1a1a;
+            border-left: 4px solid #d4af37;
+            border-radius: 5px;
+            text-align: left;
+        }
+        
+        .info h3 {
+            color: #d4af37;
+            margin-top: 0;
+        }
+        
+        .info ul {
+            color: #b8962b;
+            line-height: 1.8;
+        }
+        
+        .button-group {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            background: #d4af37;
+            color: #000;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(212, 175, 55, 0.3);
+        }
+        
+        button:hover {
+            background: #f0c24a;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(212, 175, 55, 0.5);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .specs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .spec-item {
+            background: #1a1a1a;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #d4af37;
+        }
+        
+        .spec-label {
+            color: #d4af37;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        .spec-value {
+            color: #b8962b;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🦷 QR Code - Dr. Luiz H Dias</h1>
+        <p class="subtitle">NEOdonto Odontologia</p>
+        
+        <div class="url-display">
+            https://www.drluizhdias.com.br/
+        </div>
+        
+        <div id="qrcode"></div>
+        
+        <div class="button-group">
+            <button onclick="baixarQRCode()">📥 Baixar QR Code PNG</button>
+            <button onclick="baixarQRCodeSVG()">📥 Baixar SVG (Vetorial)</button>
+            <button onclick="copiarURL()">📋 Copiar URL</button>
+        </div>
+        
+        <div class="specs">
+            <div class="spec-item">
+                <span class="spec-label">Formato</span>
+                <span class="spec-value">PNG 1024x1024</span>
+            </div>
+            <div class="spec-item">
+                <span class="spec-label">Cores</span>
+                <span class="spec-value">Dourado Laminado Degradê</span>
+            </div>
+            <div class="spec-item">
+                <span class="spec-label">Erro Correction</span>
+                <span class="spec-value">Level H (30%)</span>
+            </div>
+        </div>
+        
+        <div class="info">
+            <h3>📋 Instruções para Impressão</h3>
+            <ul>
+                <li><strong>Tamanho recomendado:</strong> Mínimo 2cm x 2cm para cartão de visita</li>
+                <li><strong>Resolução:</strong> 300 DPI ou superior para impressão profissional</li>
+                <li><strong>Formato:</strong> Use o SVG para melhor qualidade em qualquer tamanho</li>
+                <li><strong>Teste:</strong> Sempre teste o QR code com vários smartphones antes de imprimir</li>
+                <li><strong>Cores:</strong> QR code com gradiente dourado laminado sobre fundo preto</li>
+                <li><strong>Margem:</strong> Mantenha espaço mínimo de 5mm ao redor do QR code</li>
+            </ul>
+        </div>
+    </div>
+    
+    <script>
+        const siteUrl = 'https://www.drluizhdias.com.br/';
+        const corFundo = '#000000';
+        let finalCanvas = null;
+        
+        const tempDiv = document.createElement('div');
+        tempDiv.style.display = 'none';
+        document.body.appendChild(tempDiv);
+        
+        const qrcode = new QRCode(tempDiv, {
+            text: siteUrl,
+            width: 512,
+            height: 512,
+            colorDark: '#000000',
+            colorLight: '#ffffff',
+            correctLevel: QRCode.CorrectLevel.H
+        });
+        
+        setTimeout(() => {
+            const tempCanvas = tempDiv.querySelector('canvas');
+            if (!tempCanvas) {
+                console.error('Canvas não encontrado');
+                return;
+            }
+            
+            const qrcodeDiv = document.getElementById("qrcode");
+            finalCanvas = document.createElement('canvas');
+            finalCanvas.width = 512;
+            finalCanvas.height = 512;
+            const ctx = finalCanvas.getContext('2d');
+            
+            ctx.fillStyle = corFundo;
+            ctx.fillRect(0, 0, 512, 512);
+            
+            const gradient = ctx.createLinearGradient(0, 0, 512, 512);
+            gradient.addColorStop(0, '#f4e4b0');
+            gradient.addColorStop(0.15, '#d4c088');
+            gradient.addColorStop(0.3, '#c9a961');
+            gradient.addColorStop(0.5, '#b8962b');
+            gradient.addColorStop(0.65, '#c9a961');
+            gradient.addColorStop(0.8, '#e6d4a0');
+            gradient.addColorStop(1, '#f4e4b0');
+            
+            const tempCtx = tempCanvas.getContext('2d');
+            const imageData = tempCtx.getImageData(0, 0, 512, 512);
+            
+            ctx.fillStyle = gradient;
+            for (let y = 0; y < 512; y++) {
+                for (let x = 0; x < 512; x++) {
+                    const i = (y * 512 + x) * 4;
+                    if (imageData.data[i] < 128) {
+                        ctx.fillRect(x, y, 1, 1);
+                    }
+                }
+            }
+            
+            qrcodeDiv.appendChild(finalCanvas);
+            document.body.removeChild(tempDiv);
+        }, 300);
+        
+        function baixarQRCode() {
+            if (!finalCanvas) {
+                alert('Aguarde o QR Code ser gerado!');
+                return;
+            }
+            
+            const highResCanvas = document.createElement('canvas');
+            const ctx = highResCanvas.getContext('2d');
+            highResCanvas.width = 1024;
+            highResCanvas.height = 1024;
+            
+            ctx.fillStyle = corFundo;
+            ctx.fillRect(0, 0, 1024, 1024);
+            
+            const gradient = ctx.createLinearGradient(0, 0, 1024, 1024);
+            gradient.addColorStop(0, '#f4e4b0');
+            gradient.addColorStop(0.15, '#d4c088');
+            gradient.addColorStop(0.3, '#c9a961');
+            gradient.addColorStop(0.5, '#b8962b');
+            gradient.addColorStop(0.65, '#c9a961');
+            gradient.addColorStop(0.8, '#e6d4a0');
+            gradient.addColorStop(1, '#f4e4b0');
+            
+            const srcCtx = finalCanvas.getContext('2d');
+            const srcData = srcCtx.getImageData(0, 0, 512, 512);
+            
+            ctx.fillStyle = gradient;
+            for (let y = 0; y < 1024; y++) {
+                for (let x = 0; x < 1024; x++) {
+                    const srcX = Math.floor(x / 2);
+                    const srcY = Math.floor(y / 2);
+                    const i = (srcY * 512 + srcX) * 4;
+                    
+                    if (srcData.data[i + 1] > 128) {
+                        ctx.fillRect(x, y, 1, 1);
+                    }
+                }
+            }
+            
+            const link = document.createElement('a');
+            link.download = 'qrcode-drluizhdias-dourado-1024x1024.png';
+            link.href = highResCanvas.toDataURL('image/png');
+            link.click();
+        }
+        
+        function baixarQRCodeSVG() {
+            if (!finalCanvas) {
+                alert('Aguarde o QR Code ser gerado!');
+                return;
+            }
+            
+            const ctx = finalCanvas.getContext('2d');
+            const imageData = ctx.getImageData(0, 0, 512, 512);
+            
+            let svg = `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="1024" height="1024" viewBox="0 0 512 512">
+    <defs>
+        <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#f4e4b0;stop-opacity:1" />
+            <stop offset="15%" style="stop-color:#d4c088;stop-opacity:1" />
+            <stop offset="30%" style="stop-color:#c9a961;stop-opacity:1" />
+            <stop offset="50%" style="stop-color:#b8962b;stop-opacity:1" />
+            <stop offset="65%" style="stop-color:#c9a961;stop-opacity:1" />
+            <stop offset="80%" style="stop-color:#e6d4a0;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#f4e4b0;stop-opacity:1" />
+        </linearGradient>
+    </defs>
+    <rect width="512" height="512" fill="${corFundo}"/>
+    <g fill="url(#goldGradient)">`;
+            
+            for (let y = 0; y < 512; y++) {
+                for (let x = 0; x < 512; x++) {
+                    const i = (y * 512 + x) * 4;
+                    if (imageData.data[i + 1] > 128) {
+                        svg += `\n        <rect x="${x}" y="${y}" width="1" height="1"/>`;
+                    }
+                }
+            }
+            
+            svg += `\n    </g>\n</svg>`;
+            
+            const blob = new Blob([svg], { type: 'image/svg+xml' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.download = 'qrcode-drluizhdias-dourado.svg';
+            link.href = url;
+            link.click();
+            URL.revokeObjectURL(url);
+        }
+        
+        function copiarURL() {
+            navigator.clipboard.writeText(siteUrl).then(() => {
+                const btn = event.target;
+                const textoOriginal = btn.textContent;
+                btn.textContent = '✅ URL Copiada!';
+                btn.style.background = '#4CAF50';
+                
+                setTimeout(() => {
+                    btn.textContent = textoOriginal;
+                    btn.style.background = '#d4af37';
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>
