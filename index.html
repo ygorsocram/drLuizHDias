@@ -63,12 +63,15 @@
             width: 100%;
             overflow: hidden;
             padding: 1rem 0;
+            touch-action: pan-y pinch-zoom;
+            -webkit-overflow-scrolling: touch;
         }
         .carousel-container {
             display: flex;
             gap: 1.5rem;
             animation: scroll 70s linear infinite;
             width: fit-content;
+            touch-action: none;
         }
         .carousel-container.paused {
             animation-play-state: paused;
@@ -219,14 +222,14 @@
                 </div>
                 <!-- Duplicar cards para efeito infinito -->
                 <div class="service-card text-center">
-                    <img src="imagens/icons/clareamento.jpeg" alt="Próteses Dentárias" class="service-icon-img">
+                    <img src="imagens/icons/clareamento.jpeg" alt="Clareamento Dentário" class="service-icon-img">
                     <h3 class="h5">Clareamento Dentário</h3>
                     <p>Recupere um sorriso mais branco e confiante com técnicas modernas e seguras.</p>
                 </div>
                 <div class="service-card text-center">
                     <img src="imagens/icons/cirurgia-oral-menor.png" alt="Próteses Dentárias" class="service-icon-img">
                     <h3 class="h5">Cirurgia Oral Menor</h3>
-                    <p>Procedimento de Extração dentária (Dentes, cisos e raizes residual).</p>
+                    <p>Procedimento de Extração dentária (Dentes e raizes residual).</p>
                 </div>
                 <div class="service-card text-center">
                     <img src="imagens/icons/canal.png" alt="Tratamento endodôntico (Canal)" class="service-icon-img">
@@ -325,17 +328,46 @@
         const wrapper = carousel.parentElement;
         let isDragging = false;
         let startX = 0;
-        let startScrollLeft = 0;
         let currentTranslate = 0;
         let prevTranslate = 0;
+        let animationId = null;
+        let lastTime = Date.now();
 
-        // Pausar/Retomar animação
-        function pauseAnimation() {
-            carousel.classList.add('paused');
+        // Animação customizada via JavaScript
+        function animateCarousel() {
+            if (isDragging) return;
+
+            const now = Date.now();
+            const delta = (now - lastTime) / 1000; // em segundos
+            lastTime = now;
+
+            // Velocidade do movimento (pixels por segundo)
+            const speed = -50; // Negativo para mover da direita para esquerda
+            currentTranslate += speed * delta;
+
+            // Resetar posição quando chegar no fim (efeito loop)
+            const carouselWidth = carousel.scrollWidth / 2;
+            if (Math.abs(currentTranslate) >= carouselWidth) {
+                currentTranslate = 0;
+            }
+
+            carousel.style.transform = `translateX(${currentTranslate}px)`;
+            animationId = requestAnimationFrame(animateCarousel);
         }
 
-        function resumeAnimation() {
-            carousel.classList.remove('paused');
+        // Iniciar animação
+        function startAnimation() {
+            if (animationId) cancelAnimationFrame(animationId);
+            lastTime = Date.now();
+            animateCarousel();
+        }
+
+        // Parar animação
+        function stopAnimation() {
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+                animationId = null;
+            }
         }
 
         // Obter posição atual do transform
@@ -350,12 +382,11 @@
             isDragging = true;
             startX = e.pageX;
             carousel.classList.add('dragging');
-            pauseAnimation();
+            stopAnimation();
 
             currentTranslate = getCurrentTranslate();
             prevTranslate = currentTranslate;
 
-            // Prevenir comportamento padrão
             e.preventDefault();
         });
 
@@ -364,11 +395,9 @@
 
             const currentX = e.pageX;
             const diff = currentX - startX;
-            const newTranslate = prevTranslate + diff;
+            currentTranslate = prevTranslate + diff;
 
-            carousel.style.animation = 'none';
-            carousel.style.transform = `translateX(${newTranslate}px)`;
-
+            carousel.style.transform = `translateX(${currentTranslate}px)`;
             e.preventDefault();
         });
 
@@ -378,12 +407,8 @@
             isDragging = false;
             carousel.classList.remove('dragging');
 
-            // Retornar à animação após um pequeno delay
-            setTimeout(() => {
-                carousel.style.animation = '';
-                carousel.style.transform = '';
-                resumeAnimation();
-            }, 100);
+            // Continuar animação de onde parou
+            startAnimation();
         });
 
         // Touch events para mobile
@@ -391,44 +416,55 @@
             isDragging = true;
             startX = e.touches[0].clientX;
             carousel.classList.add('dragging');
-            pauseAnimation();
+            stopAnimation();
 
             currentTranslate = getCurrentTranslate();
             prevTranslate = currentTranslate;
-        }, { passive: true });
+
+            if (e.cancelable) {
+                e.preventDefault();
+            }
+        }, { passive: false });
 
         carousel.addEventListener('touchmove', (e) => {
             if (!isDragging) return;
 
             const currentX = e.touches[0].clientX;
             const diff = currentX - startX;
-            const newTranslate = prevTranslate + diff;
+            currentTranslate = prevTranslate + diff;
 
-            carousel.style.animation = 'none';
-            carousel.style.transform = `translateX(${newTranslate}px)`;
-        }, { passive: true });
+            carousel.style.transform = `translateX(${currentTranslate}px)`;
 
-        carousel.addEventListener('touchend', () => {
+            if (e.cancelable) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+
+        carousel.addEventListener('touchend', (e) => {
             if (!isDragging) return;
 
             isDragging = false;
             carousel.classList.remove('dragging');
 
-            // Retornar à animação
-            setTimeout(() => {
-                carousel.style.animation = '';
-                carousel.style.transform = '';
-                resumeAnimation();
-            }, 100);
-        }, { passive: true });
+            // Continuar animação de onde parou
+            startAnimation();
+
+            if (e.cancelable) {
+                e.preventDefault();
+            }
+        }, { passive: false });
 
         // Pausar animação ao passar o mouse
-        carousel.addEventListener('mouseenter', pauseAnimation);
+        carousel.addEventListener('mouseenter', stopAnimation);
         carousel.addEventListener('mouseleave', () => {
             if (!isDragging) {
-                resumeAnimation();
+                startAnimation();
             }
         });
+
+        // Desabilitar animação CSS e iniciar animação JavaScript
+        carousel.style.animation = 'none';
+        startAnimation();
 
         document.addEventListener('scroll', function() {
             const floatBtn = document.getElementById('whatsappFloat');
