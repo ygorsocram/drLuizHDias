@@ -70,7 +70,7 @@
             animation: scroll 70s linear infinite;
             width: fit-content;
         }
-        .carousel-container:hover, .carousel-container.paused {
+        .carousel-container.paused {
             animation-play-state: paused;
         }
         .carousel-container.dragging {
@@ -78,9 +78,13 @@
             -webkit-user-select: none;
             -moz-user-select: none;
             -ms-user-select: none;
+            cursor: grabbing !important;
         }
         .carousel-container.dragging .service-card {
             pointer-events: none;
+        }
+        .carousel-container {
+            cursor: grab;
         }
         @keyframes scroll {
             0% { transform: translateX(0); }
@@ -321,96 +325,110 @@
         const wrapper = carousel.parentElement;
         let isDragging = false;
         let startX = 0;
+        let startScrollLeft = 0;
         let currentTranslate = 0;
         let prevTranslate = 0;
-        let animationID = 0;
-        let currentAnimation = null;
 
-        // Desabilitar animação CSS ao arrastar
+        // Pausar/Retomar animação
         function pauseAnimation() {
-            carousel.style.animationPlayState = 'paused';
             carousel.classList.add('paused');
         }
 
         function resumeAnimation() {
-            carousel.style.animationPlayState = 'running';
-            setTimeout(() => {
-                carousel.classList.remove('paused');
-            }, 2000);
+            carousel.classList.remove('paused');
+        }
+
+        // Obter posição atual do transform
+        function getCurrentTranslate() {
+            const style = window.getComputedStyle(carousel);
+            const matrix = new DOMMatrix(style.transform);
+            return matrix.m41;
         }
 
         // Mouse events
         carousel.addEventListener('mousedown', (e) => {
-            e.preventDefault(); // Prevenir seleção de texto
             isDragging = true;
-            startX = e.pageX - wrapper.offsetLeft;
-            carousel.style.cursor = 'grabbing';
+            startX = e.pageX;
             carousel.classList.add('dragging');
             pauseAnimation();
-            
-            // Obter a posição atual da animação
-            const style = window.getComputedStyle(carousel);
-            const matrix = new DOMMatrix(style.transform);
-            currentTranslate = matrix.m41;
+
+            currentTranslate = getCurrentTranslate();
             prevTranslate = currentTranslate;
-        });
 
-        carousel.addEventListener('mousemove', (e) => {
-            if (!isDragging) return;
+            // Prevenir comportamento padrão
             e.preventDefault();
-            const x = e.pageX - wrapper.offsetLeft;
-            const walk = (x - startX) * 2;
-            carousel.style.transform = `translateX(${prevTranslate + walk}px)`;
         });
 
-        carousel.addEventListener('mouseup', () => {
+        document.addEventListener('mousemove', (e) => {
             if (!isDragging) return;
-            isDragging = false;
-            carousel.style.cursor = 'grab';
-            carousel.classList.remove('dragging');
-            
-            // Resetar para continuar a animação
-            carousel.style.transform = '';
-            resumeAnimation();
+
+            const currentX = e.pageX;
+            const diff = currentX - startX;
+            const newTranslate = prevTranslate + diff;
+
+            carousel.style.animation = 'none';
+            carousel.style.transform = `translateX(${newTranslate}px)`;
+
+            e.preventDefault();
         });
 
-        carousel.addEventListener('mouseleave', () => {
+        document.addEventListener('mouseup', () => {
             if (!isDragging) return;
+
             isDragging = false;
-            carousel.style.cursor = 'grab';
             carousel.classList.remove('dragging');
-            carousel.style.transform = '';
-            resumeAnimation();
+
+            // Retornar à animação após um pequeno delay
+            setTimeout(() => {
+                carousel.style.animation = '';
+                carousel.style.transform = '';
+                resumeAnimation();
+            }, 100);
         });
 
-        // Touch events
+        // Touch events para mobile
         carousel.addEventListener('touchstart', (e) => {
             isDragging = true;
             startX = e.touches[0].clientX;
+            carousel.classList.add('dragging');
             pauseAnimation();
-            
-            const style = window.getComputedStyle(carousel);
-            const matrix = new DOMMatrix(style.transform);
-            currentTranslate = matrix.m41;
+
+            currentTranslate = getCurrentTranslate();
             prevTranslate = currentTranslate;
-        });
+        }, { passive: true });
 
         carousel.addEventListener('touchmove', (e) => {
             if (!isDragging) return;
-            const x = e.touches[0].clientX;
-            const walk = (x - startX) * 2;
-            carousel.style.transform = `translateX(${prevTranslate + walk}px)`;
-        });
+
+            const currentX = e.touches[0].clientX;
+            const diff = currentX - startX;
+            const newTranslate = prevTranslate + diff;
+
+            carousel.style.animation = 'none';
+            carousel.style.transform = `translateX(${newTranslate}px)`;
+        }, { passive: true });
 
         carousel.addEventListener('touchend', () => {
             if (!isDragging) return;
-            isDragging = false;
-            carousel.style.transform = '';
-            resumeAnimation();
-        });
 
-        // Cursor style
-        carousel.style.cursor = 'grab';
+            isDragging = false;
+            carousel.classList.remove('dragging');
+
+            // Retornar à animação
+            setTimeout(() => {
+                carousel.style.animation = '';
+                carousel.style.transform = '';
+                resumeAnimation();
+            }, 100);
+        }, { passive: true });
+
+        // Pausar animação ao passar o mouse
+        carousel.addEventListener('mouseenter', pauseAnimation);
+        carousel.addEventListener('mouseleave', () => {
+            if (!isDragging) {
+                resumeAnimation();
+            }
+        });
 
         document.addEventListener('scroll', function() {
             const floatBtn = document.getElementById('whatsappFloat');
