@@ -55,7 +55,7 @@
 
         .services-section {
             padding: 4rem 0;
-			background: linear-gradient(to bottom, #2f4de7, #fb29e1)
+			background: linear-gradient(to bottom, #1a1a2e, #2f4de7, #fb29e1)
         }
         .service-card {
             background-color: #ffffff;
@@ -132,8 +132,8 @@
     <section class="services-section">
         <div class="container">
             <div class="text-center mb-5">
-                <h2 class="fw-bold">Nossos Principais Tratamentos</h2>
-                <p class="lead text-muted">Foco no que realmente importa para a sua saúde bucal.</p>
+                <h2 class="fw-bold text-white">Nossos Principais Tratamentos</h2>
+                <p class="lead" style="color: rgba(255, 255, 255, 0.85);">Foco no que realmente importa para a sua saúde bucal.</p>
             </div>
 
             <div class="row g-4 justify-content-center">
@@ -218,13 +218,15 @@
 
     <footer>
         <div class="container">
-            <p class="mb-1">© 2025. Dr. Luiz Henrique Dias - Cirurgião-Dentista – CRO-GO 23.765</p>
+            <p class="mb-1">© <span id="currentYear"></span>. Dr. Luiz Henrique Dias - Cirurgião-Dentista – CRO-GO 23.765</p>
             <p>NEOdonto Odontologia – Goiânia/GO</p>
         </div>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+
         document.addEventListener('scroll', function() {
             const floatBtn = document.getElementById('whatsappFloat');
             const heroSection = document.getElementById('heroSection');
